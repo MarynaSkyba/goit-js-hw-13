@@ -1,3 +1,5 @@
+
+
 export default class NewsApiService {
     constructor (){
         this.searchQuery = '';
@@ -11,12 +13,13 @@ export default class NewsApiService {
         .then(r =>r.json())
         .then(data => {    
             this.page +=1;
-
             return data.hits;
+
         })
         ;  
     }
-    
+
+   
     resetPage () {
         this.page = 1;
     }

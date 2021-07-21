@@ -3,10 +3,8 @@ import NewsApiService from './news-service'
 import Notiflix from 'notiflix';
 import cards from './templates/cards.hbs';
 import SimpleLightbox from "simplelightbox";
-import { func } from 'assert-plus';
-import fresh from 'fresh';
+import axios from 'axios';
 
-// Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
 
 const refs = {
     searchForm: document.querySelector('.search-form'),
@@ -17,21 +15,24 @@ const refs = {
 
 const newsApiService = new NewsApiService();
 
+
+
 refs.searchForm.addEventListener('submit', onSearch)
 refs.loadMoreBtn.addEventListener('click', onLoad)
 
 
-
 function onSearch(e){
     e.preventDefault();
-    
     newsApiService.query = e.currentTarget.elements.searchQuery.value;
-    console.log(newsApiService.query);
+
+   if (newsApiService.query === ''){
+    Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+   } else {
     newsApiService.resetPage();
     newsApiService.fetchArticles().then(hits => {
         clearCardsCounteiner();
         appendCardsMarkup(hits);
-    });
+   });}
 }
 
 function onLoad (){
@@ -39,9 +40,12 @@ function onLoad (){
 };
 
 
+// let gallery = new SimpleLightbox('.gallery');
+// gallery.on('show.simplelightbox', 
+
 function appendCardsMarkup(hits){
     refs.galleryCards.insertAdjacentHTML('beforeend', cards(hits));
-}
+};
 
 function clearCardsCounteiner(){
     refs.galleryCards.innerHTML = '';
