@@ -1,1 +1,0 @@
-fetch('https://pixabay.com/api/?key=22578117-98ddcf36fbc3d0da8c48aeee6&q=cat&image_type=photo&orientation=horizontal&safesearch=true&page=1&per_page=40')

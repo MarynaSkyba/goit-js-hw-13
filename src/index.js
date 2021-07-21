@@ -1,8 +1,10 @@
 import './css/styles.css';
 import NewsApiService from './news-service'
-// import Notiflix from 'notiflix';
-// import fetchCards from './templates/fetchCards.hbs'
-// import SimpleLightbox from "simplelightbox"
+import Notiflix from 'notiflix';
+import cards from './templates/cards.hbs';
+import SimpleLightbox from "simplelightbox";
+import { func } from 'assert-plus';
+import fresh from 'fresh';
 
 // Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
 
@@ -22,11 +24,25 @@ refs.loadMoreBtn.addEventListener('click', onLoad)
 
 function onSearch(e){
     e.preventDefault();
+    
     newsApiService.query = e.currentTarget.elements.searchQuery.value;
     console.log(newsApiService.query);
-    newsApiService.fetchArticles()
+    newsApiService.resetPage();
+    newsApiService.fetchArticles().then(hits => {
+        clearCardsCounteiner();
+        appendCardsMarkup(hits);
+    });
 }
 
 function onLoad (){
-    newsApiService.fetchArticles();
+    newsApiService.fetchArticles().then(appendCardsMarkup);
+};
+
+
+function appendCardsMarkup(hits){
+    refs.galleryCards.insertAdjacentHTML('beforeend', cards(hits));
+}
+
+function clearCardsCounteiner(){
+    refs.galleryCards.innerHTML = '';
 }

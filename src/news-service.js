@@ -1,16 +1,25 @@
 export default class NewsApiService {
     constructor (){
         this.searchQuery = '';
+        this.page = 1;
     }
 
     fetchArticles() {
-        const url =`https://pixabay.com/api/?key=22578117-98ddcf36fbc3d0da8c48aeee6&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&page=1&per_page=40`;
+        const url =`https://pixabay.com/api/?key=22578117-98ddcf36fbc3d0da8c48aeee6&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&page=${this.page}&per_page=40`;
 
-        fetch(url)
+        return fetch(url)
         .then(r =>r.json())
-        .then(console.log);
+        .then(data => {    
+            this.page +=1;
+
+            return data.hits;
+        })
+        ;  
     }
     
+    resetPage () {
+        this.page = 1;
+    }
     
     get query() {
         return this.searchQuery;
