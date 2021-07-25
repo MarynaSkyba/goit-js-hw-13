@@ -2,10 +2,10 @@ import './css/styles.css';
 import NewsApiService from './news-service'
 import Notiflix from 'notiflix';
 import cards from './templates/cards.hbs';
-// import SimpleLightbox from "simplelightbox";
+import SimpleLightbox from "simplelightbox";
 import axios from 'axios';
 
-// var lightbox = new SimpleLightbox('.gallery a');
+var lightbox = new SimpleLightbox('.gallery a');
 
 const refs = {
     searchForm: document.querySelector('.search-form'),
@@ -32,18 +32,18 @@ async function onSearch(e){
     refs.loadMoreBtn.disabled = true;
     refs.loadMoreBtn.classList.remove('is-hidden');
     
-   try {
-    if (newsApiService.query.trim() === ''){
-        Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
-       } else {  
-           
-    const result = await newsApiService.fetchArticles();
-    clearCardsCounteiner();
-    Notiflix.Notify.info(`"Hooray! We found ${result.totalHits} images."`)
-    appendCardsMarkup(result.hits);
-    lightbox.refresh(hit); 
-    refs.loadMoreBtn.disabled = false;}
-    
+    try {
+        const result = await newsApiService.fetchArticles();
+        
+        if (newsApiService.query.trim() === ''){
+            Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+        } else {  
+            clearCardsCounteiner();
+            Notiflix.Notify.info(`"Hooray! We found ${result.totalHits} images."`);
+            appendCardsMarkup(result.hits);
+    refs.loadMoreBtn.disabled = false;
+    // lightbox.refresh(hit); 
+}
    } catch (error) {
        console.log(error);
    }
@@ -51,22 +51,24 @@ async function onSearch(e){
 
 
 async function onLoad (){
-    refs.loadMoreBtn.disabled = true;
-    try {
+        refs.loadMoreBtn.disabled = true;
         const result = await newsApiService.fetchArticles();
-
-        if (refs.galleryCards.querySelectorAll('.photo-card').length === result.totalHits){
+        try { 
+            if (refs.galleryCards.querySelectorAll('.photo-card').length === result.totalHits){
             Notiflix.Notify.failure('"We are sorry, but you have reached the end of search results."');
             refs.loadMoreBtn.classList.add('is-hidden');
         } else {
-        appendCardsMarkup(result.hits)
-        refs.loadMoreBtn.disabled = false;
+            appendCardsMarkup(result.hits);
+            refs.loadMoreBtn.disabled = false;
+        }}
+        catch (error){
+            console.log(error)
         }
-    } catch (error) {
-        console.log(error)
-    }
+       
+    } 
     
-}
+
+
 
 function appendCardsMarkup(data){
  refs.galleryCards.insertAdjacentHTML('beforeend', cards(data));
