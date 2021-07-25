@@ -24,41 +24,52 @@ refs.loadMoreBtn.addEventListener('click', onLoad)
 refs.loadMoreBtn.classList.add('is-hidden');
 
 
-function onSearch(e){
+async function onSearch(e){
     e.preventDefault();
+    newsApiService.resetPage();
     newsApiService.query = e.currentTarget.elements.searchQuery.value;
     
-   if (newsApiService.query.trim() === ''){
-    Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
-   }
-   else {
     refs.loadMoreBtn.disabled = true;
     refs.loadMoreBtn.classList.remove('is-hidden');
-
-    Notiflix.Notify.info(`"Hooray! We found ${newsApiService.fetchArticles().totalHits} images."`)
     
-    newsApiService.resetPage();
-    newsApiService.fetchArticles().then(hit => {
-        console.log(hit);
+   try {
+    if (newsApiService.query.trim() === ''){
+        Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+       } else {  
+           
+    const result = await newsApiService.fetchArticles();
     clearCardsCounteiner();
-    refs.loadMoreBtn.disabled = false;
-    appendCardsMarkup(hit);
-    lightbox.refresh(hit);    
-   });}
+    Notiflix.Notify.info(`"Hooray! We found ${result.totalHits} images."`)
+    appendCardsMarkup(result.hits);
+    lightbox.refresh(hit); 
+    refs.loadMoreBtn.disabled = false;}
+    
+   } catch (error) {
+       console.log(error);
+   }
 }
 
 
-function onLoad (){
+async function onLoad (){
     refs.loadMoreBtn.disabled = true;
-    newsApiService.fetchArticles().then(hit => {
-        appendCardsMarkup(hit)
-        refs.loadMoreBtn.disabled = false}
-        );
+    try {
+        const result = await newsApiService.fetchArticles();
+
+        if (refs.galleryCards.querySelectorAll('.photo-card').length === result.totalHits){
+            Notiflix.Notify.failure('"We are sorry, but you have reached the end of search results."');
+            refs.loadMoreBtn.classList.add('is-hidden');
+        } else {
+        appendCardsMarkup(result.hits)
+        refs.loadMoreBtn.disabled = false;
+        }
+    } catch (error) {
+        console.log(error)
+    }
+    
 }
 
-
-function appendCardsMarkup(hit){
- refs.galleryCards.insertAdjacentHTML('beforeend', cards(hit));
+function appendCardsMarkup(data){
+ refs.galleryCards.insertAdjacentHTML('beforeend', cards(data));
 };
 
 function clearCardsCounteiner () {
