@@ -37,6 +37,7 @@ async function onSearch(e){
         
         if (newsApiService.query.trim() === ''){
             clearCardsCounteiner();
+            refs.loadMoreBtn.classList.add('is-hidden');
             Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
         } else {  
             refs.loadMoreBtn.classList.remove('is-hidden');
