@@ -58,9 +58,9 @@ async function onLoad (){
         const result = await newsApiService.fetchArticles();
         appendCardsMarkup(result.hits);
         refs.loadMoreBtn.disabled = false;
-        
+
         const lenghtHits = refs.galleryCards.querySelectorAll('.photo-card').length;
-        console.log(lenghtHits);
+      
         
         if (lenghtHits === result.totalHits){
             Notiflix.Notify.failure('"We are sorry, but you have reached the end of search results."');
@@ -85,11 +85,4 @@ function clearCardsCounteiner () {
     refs.galleryCards.innerHTML = '';
 }
 
-// function hitStatus(hit) {
-//     if (hit.status === 400) {
-//         Notiflix.Notify.failure('"We are sorry, but you have reached the end of search results."');
-//        refs.loadMoreBtn.classList.add('is-hidden');
 
-//        console.log(hit.status);
-//     }
-// }
