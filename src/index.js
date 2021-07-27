@@ -5,7 +5,7 @@ import cards from './templates/cards.hbs';
 import SimpleLightbox from "simplelightbox";
 import axios from 'axios';
 
-var lightbox = new SimpleLightbox('.gallery a');
+// var lightbox = new SimpleLightbox('.gallery a');
 
 const refs = {
     searchForm: document.querySelector('.search-form'),
@@ -29,8 +29,8 @@ async function onSearch(e){
     newsApiService.resetPage();
     newsApiService.query = e.currentTarget.elements.searchQuery.value;
     
-    refs.loadMoreBtn.disabled = true;
-    refs.loadMoreBtn.classList.remove('is-hidden');
+    // refs.loadMoreBtn.disabled = true;
+    // refs.loadMoreBtn.classList.remove('is-hidden');
     
     try {
         const result = await newsApiService.fetchArticles();
@@ -38,10 +38,12 @@ async function onSearch(e){
         if (newsApiService.query.trim() === ''){
             Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
         } else {  
+            refs.loadMoreBtn.classList.remove('is-hidden');
+
             clearCardsCounteiner();
             Notiflix.Notify.info(`"Hooray! We found ${result.totalHits} images."`);
             appendCardsMarkup(result.hits);
-    refs.loadMoreBtn.disabled = false;
+        //    refs.loadMoreBtn.disabled = false;
     // lightbox.refresh(hit); 
 }
    } catch (error) {
@@ -51,16 +53,21 @@ async function onSearch(e){
 
 
 async function onLoad (){
+    try { 
         refs.loadMoreBtn.disabled = true;
         const result = await newsApiService.fetchArticles();
-        try { 
-            if (refs.galleryCards.querySelectorAll('.photo-card').length === result.totalHits){
+        appendCardsMarkup(result.hits);
+        refs.loadMoreBtn.disabled = false;
+        
+        const lenghtHits = refs.galleryCards.querySelectorAll('.photo-card').length;
+        console.log(lenghtHits);
+        
+        if (lenghtHits === result.totalHits){
             Notiflix.Notify.failure('"We are sorry, but you have reached the end of search results."');
             refs.loadMoreBtn.classList.add('is-hidden');
-        } else {
-            appendCardsMarkup(result.hits);
-            refs.loadMoreBtn.disabled = false;
-        }}
+        } 
+
+    }
         catch (error){
             console.log(error)
         }
