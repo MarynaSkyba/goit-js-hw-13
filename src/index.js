@@ -36,12 +36,13 @@ async function onSearch(e){
         const result = await newsApiService.fetchArticles();
         
         if (newsApiService.query.trim() === ''){
+            clearCardsCounteiner();
             Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
         } else {  
             refs.loadMoreBtn.classList.remove('is-hidden');
 
             clearCardsCounteiner();
-            Notiflix.Notify.info(`"Hooray! We found ${result.totalHits} images."`);
+            Notiflix.Notify.success(`"Hooray! We found ${result.totalHits} images."`);
             appendCardsMarkup(result.hits);
         //    refs.loadMoreBtn.disabled = false;
     // lightbox.refresh(hit); 
@@ -62,7 +63,7 @@ async function onLoad (){
         const lenghtHits = refs.galleryCards.querySelectorAll('.photo-card').length;
       
         
-        if (lenghtHits === result.totalHits){
+        if (lenghtHits >= result.totalHits){
             Notiflix.Notify.failure('"We are sorry, but you have reached the end of search results."');
             refs.loadMoreBtn.classList.add('is-hidden');
         } 
