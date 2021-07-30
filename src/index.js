@@ -4,8 +4,9 @@ import Notiflix from 'notiflix';
 import cards from './templates/cards.hbs';
 import SimpleLightbox from "simplelightbox";
 import axios from 'axios';
+import 'simplelightbox/src/simple-lightbox.scss';
 
-// var lightbox = new SimpleLightbox('.gallery a');
+const gallery = new SimpleLightbox('.photo-card a');
 
 const refs = {
     searchForm: document.querySelector('.search-form'),
@@ -46,7 +47,7 @@ async function onSearch(e){
             Notiflix.Notify.success(`"Hooray! We found ${result.totalHits} images."`);
             appendCardsMarkup(result.hits);
         //    refs.loadMoreBtn.disabled = false;
-    // lightbox.refresh(hit); 
+            gallery.refresh(); 
 }
    } catch (error) {
        console.log(error);
@@ -59,6 +60,7 @@ async function onLoad (){
         refs.loadMoreBtn.disabled = true;
         const result = await newsApiService.fetchArticles();
         appendCardsMarkup(result.hits);
+        gallery.refresh();
         refs.loadMoreBtn.disabled = false;
 
         const lenghtHits = refs.galleryCards.querySelectorAll('.photo-card').length;
