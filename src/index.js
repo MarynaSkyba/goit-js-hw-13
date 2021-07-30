@@ -36,7 +36,7 @@ async function onSearch(e){
     try {
         const result = await newsApiService.fetchArticles();
         
-        if (newsApiService.query.trim() === ''){
+        if (newsApiService.query.trim() === '' || result.hits.length === 0){    
             clearCardsCounteiner();
             refs.loadMoreBtn.classList.add('is-hidden');
             Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
