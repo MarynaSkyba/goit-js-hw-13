@@ -29,7 +29,7 @@ async function onSearch(e){
     e.preventDefault();
     newsApiService.resetPage();
     newsApiService.query = e.currentTarget.elements.searchQuery.value;
-    
+    console.log(newsApiService.query)
     // refs.loadMoreBtn.disabled = true;
     // refs.loadMoreBtn.classList.remove('is-hidden');
     
